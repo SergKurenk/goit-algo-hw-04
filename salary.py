@@ -5,8 +5,13 @@ def load_data(filename: str) -> list[str]:
     with open(filename, "r") as file:
         return file.readlines()
 
-def clean_data(temperature_data: list[str]) -> list[float]:
-    return [float(temp.strip()) for temp in temperature_data if temp.strip()]
+def clean_data(strng: list[str]) -> list[str, int]:
+    for s in strng:
+        n = s.strip().split(",")
+        print(n)
+    #(print(s) for s in strng)
+    return 0
+# [int(str.strip()) for str in emp if str.strip()]
 
 def calculate_statistics(temperatures: list[float]) -> dict:
     if not temperatures:
@@ -33,22 +38,26 @@ def calculate_median(temperatures: list[float]) -> float:
     else:
         return temperatures[mid]
 
-from data import load_data, clean_data
-from processing import calculate_statistics
+# from data import load_data, clean_data
+# from processing import calculate_statistics
 
 def main():
-    filename = "temperatures.txt"
-    raw_data = load_data(filename)
-    temperatures = clean_data(raw_data)
-    stats = calculate_statistics(temperatures)
+    filename = "employee.txt"
+    # parsed_employee = total_salary(filename)
+    file_data = load_data(filename)
+    employee_data = clean_data(file_data)
 
-    if stats:
-        print(f"Minimum Temperature: {stats['min']}°C")
-        print(f"Maximum Temperature: {stats['max']}°C")
-        print(f"Average Temperature: {stats['average']:.2f}°C")
-        print(f"Median Temperature: {stats['median']:.2f}°C")
-    else:
-        print("No temperature data available.")
+    # raw_data = load_data(filename)
+    # temperatures = clean_data(raw_data)
+    # stats = calculate_statistics(temperatures)
+
+    # if stats:
+    #     print(f"Minimum Temperature: {stats['min']}°C")
+    #     print(f"Maximum Temperature: {stats['max']}°C")
+    #     print(f"Average Temperature: {stats['average']:.2f}°C")
+    #     print(f"Median Temperature: {stats['median']:.2f}°C")
+    # else:
+    #     print("No temperature data available.")
 
 if __name__ == "__main__":
     main()
