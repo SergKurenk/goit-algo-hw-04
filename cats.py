@@ -1,5 +1,40 @@
-cats_info = get_cats_info("path/to/cats_file.txt")
-print(cats_info)
+from pathlib import Path
+
+def get_cats_info(path):
+    file_data = load_data(path)
+    if len(file_data) < 3:
+        return -1
+    cats_data = clean_data(file_data)
+    return cats_data
+
+def load_data(filename: str) -> str:
+    file_path = Path(filename)
+    if(file_path.exists()):
+        with open(filename, "r", encoding='utf-8') as file:
+            return file.readlines()
+    else:
+        print(f"Can`t open file: {filename}")
+        return ""
+
+def clean_data(strng: list[str]) -> list[{str, str, int}]:
+    ret = []
+    for s in strng:
+        id, name, age = s.strip().split(",")
+        if(age.isnumeric() and len(id) > 0 and len(name) > 0):
+            ret.append({"id":id, "name":name, "age":age})
+    return ret
+
+def main():
+    filename = "cats.txt"
+    cats_info = get_cats_info(filename)
+    if cats_info:
+        print(f"Errorcode: {cats_info}")
+    else:
+        print(cats_info)
+
+if __name__ == "__main__":
+    main()
+
 
 
 

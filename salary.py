@@ -1,63 +1,40 @@
+from pathlib import Path
+
 def total_salary(path):
-    return 0
+    file_data = load_data(path)
+    if len(file_data) < 1:
+        return -1
+    employee_data = clean_data(file_data)
+    emp_sum, emp_mid = calc_salary(employee_data)
+    return emp_sum, emp_mid
 
 def load_data(filename: str) -> list[str]:
-    with open(filename, "r") as file:
-        return file.readlines()
+    file_path = Path(filename)
+    if(file_path.exists()):
+        with open(filename, "r", encoding='utf-8') as file:
+            return file.readlines()
+    else:
+        print(f"Can`t open file: {filename}")
+        return ""
 
 def clean_data(strng: list[str]) -> list[str, int]:
+    ret = []
     for s in strng:
-        n = s.strip().split(",")
-        print(n)
-    #(print(s) for s in strng)
-    return 0
-# [int(str.strip()) for str in emp if str.strip()]
+        name, num = s.strip().split(",")
+        if(num.isnumeric()):
+            ret.append([name, int(num)])
+    return ret
 
-def calculate_statistics(temperatures: list[float]) -> dict:
-    if not temperatures:
-        return None
-
-    min_temp = min(temperatures)
-    max_temp = max(temperatures)
-    avg_temp = sum(temperatures) / len(temperatures)
-    median_temp = calculate_median(temperatures)
-
-    return {
-        "min": min_temp,
-        "max": max_temp,
-        "average": avg_temp,
-        "median": median_temp,
-    }
-
-def calculate_median(temperatures: list[float]) -> float:
-    temperatures.sort()
-    n = len(temperatures)
-    mid = n // 2
-    if n % 2 == 0:
-        return (temperatures[mid - 1] + temperatures[mid]) / 2
-    else:
-        return temperatures[mid]
-
-# from data import load_data, clean_data
-# from processing import calculate_statistics
+def calc_salary(employee: list[str, int]) -> list[int, int]:
+    e_sum = 0
+    for person in employee:
+        e_sum += person[1]
+    return [e_sum, e_sum // len(employee)]
 
 def main():
     filename = "employee.txt"
-    # parsed_employee = total_salary(filename)
-    file_data = load_data(filename)
-    employee_data = clean_data(file_data)
-
-    # raw_data = load_data(filename)
-    # temperatures = clean_data(raw_data)
-    # stats = calculate_statistics(temperatures)
-
-    # if stats:
-    #     print(f"Minimum Temperature: {stats['min']}°C")
-    #     print(f"Maximum Temperature: {stats['max']}°C")
-    #     print(f"Average Temperature: {stats['average']:.2f}°C")
-    #     print(f"Median Temperature: {stats['median']:.2f}°C")
-    # else:
-    #     print("No temperature data available.")
+    total, average = total_salary(filename)
+    print(f"Загальна сума заробітної плати: {total}, Середня заробітна плата: {average}")
 
 if __name__ == "__main__":
     main()
