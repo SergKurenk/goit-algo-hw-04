@@ -1,22 +1,27 @@
 #яка розбиратиме введений користувачем рядок на команду та її аргументи. Команди та аргументи мають бути розпізнані незалежно від регістру введення.
 def parse_input():
     cmd = ""
-    
+    contacts = {}
+
     while(True):
         strng = input("Ведіть команду: ").split(" ")
 
         if len(strng) > 0:
-            cmd, param = strng[0].strip().lower(), [x[1:].strip() for x in strng]
+            cmd = strng[0].strip().lower()
+
+            param = [x.strip() for x in strng[1].split(",")]
             match cmd:
                 case "exit":
                     print("Бувай!")
                     break
-                case 3:
-                    print("add_contact")
-                case 4:
+                case "add_contact":
+                    add_contact(param[0], param[1], contacts)
+                case "change_contact":
                     print("change_contact")
-                case 5:
-                    print("show_phone")
+                case "show_phone":
+                    print(show_phone(param[0], contacts))
+                case "hello":
+                    print("How can I help you?")
                 case "help":
                     print("Список всіх команд:")
                     print("add_contact <ім'я>, <номер телефону> - додати новий контакт")
@@ -27,6 +32,13 @@ def parse_input():
                     print("Вибачте, я не знаю таку команду.")
         else:
             print("Введіть будь ласка команду:")
+
+def add_contact(name: str, phone: str, contacts:dict[str, str]):
+    if len(name) > 0  and len(phone) > 0:
+        contacts[name] = phone
+
+def show_phone(name: str, contacts:dict[str, str]) -> str:
+    return contacts.get(name, "Контакт не знайдено.")
 
 def main():
     parse_input()
