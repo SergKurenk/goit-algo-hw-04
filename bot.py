@@ -1,51 +1,9 @@
 import re
 #яка розбиратиме введений користувачем рядок на команду та її аргументи. Команди та аргументи мають бути розпізнані незалежно від регістру введення.
-def parse_input():
-    cmd = ""
-    contacts = {}
-    print('Welcome to the assistant bot!')
-    while(True):
-        strng = input("Ведіть команду: ").split(" ")
-
-        if len(strng) > 0:
-            cmd = strng[0].strip().lower()
-            if len(strng) > 1:
-                param = [x.strip() for x in strng[1].split(",")]
-            match cmd:
-                case "exit":
-                    print("Бувай!")
-                    break
-                case "add":
-                    if len(param) < 2:
-                        print("Недостатньо параметрів для додавання контакту.")
-                    else:
-                        add_contact(param[0], param[1], contacts)
-                case "change":
-                    if len(param) < 2:
-                        print("Недостатньо параметрів для зміни контакту.")
-                    else:
-                        change_contact(param[0], param[1], contacts)
-                case "phone":
-                    if len(param) < 1:
-                        print("Недостатньо параметрів для показу номера телефону.")
-                    else:
-                        print(show_phone(param[0], contacts))
-                case 'all':
-                    show_contacts(contacts)
-                case "hello":
-                    print("Чим я можу вам допомогти?")
-                case "help":
-                    print("Список всіх команд:")
-                    print("hello - привітання")
-                    print("add <ім'я>, <номер телефону> - додати новий контакт")
-                    print("change <ім'я>, <номер телефону> - змінити існуючий контакт")
-                    print("phone <ім'я> - показати номер телефону контакта")
-                    print("all - показати всі контакти")
-                    print("exit - закрити чат")
-                case _:
-                    print("Вибачте, я не знаю таку команду.")
-        else:
-            print("Введіть будь ласка команду:")
+def parse_input(user_input: str):
+    cmd, *args = user_input.split()
+    cmd = cmd.strip().lower()
+    return cmd, *args
 
 def show_contacts(contacts:dict[str, str]):
     if len(contacts) == 0:
@@ -81,7 +39,48 @@ def show_phone(name: str, contacts:dict[str, str]) -> str:
     return contacts.get(name, "Контакт не знайдено.")
 
 def main():
-    parse_input()
+    cmd = ""
+    contacts = {}
+    print('Welcome to the assistant bot!')
+    while True:
+        cmd, *param = parse_input(input("Ведіть команду: "))
+
+        if len(cmd) > 0:
+            match cmd:
+                case "exit":
+                    print("Бувай!")
+                    break
+                case "add":
+                    if len(param) < 2:
+                        print("Недостатньо параметрів для додавання контакту.")
+                    else:
+                        add_contact(param[0], param[1], contacts)
+                case "change":
+                    if len(param) < 2:
+                        print("Недостатньо параметрів для зміни контакту.")
+                    else:
+                        change_contact(param[0], param[1], contacts)
+                case "phone":
+                    if len(param) < 1:
+                        print("Недостатньо параметрів для показу номера телефону.")
+                    else:
+                        print(show_phone(param[0], contacts))
+                case 'all':
+                    show_contacts(contacts)
+                case "hello":
+                    print("Чим я можу вам допомогти?")
+                case "help":
+                    print("Список всіх команд:")
+                    print("hello - привітання")
+                    print("add <ім'я> <номер телефону> - додати новий контакт")
+                    print("change <ім'я> <номер телефону> - змінити існуючий контакт")
+                    print("phone <ім'я> - показати номер телефону контакта")
+                    print("all - показати всі контакти")
+                    print("exit - закрити чат")
+                case _:
+                    print("Вибачте, я не знаю таку команду.")
+        else:
+            print("Введіть будь ласка команду:")
 
 if __name__ == "__main__":
     main()
