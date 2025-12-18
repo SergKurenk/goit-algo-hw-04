@@ -1,48 +1,87 @@
+import re
 #яка розбиратиме введений користувачем рядок на команду та її аргументи. Команди та аргументи мають бути розпізнані незалежно від регістру введення.
 def parse_input():
     cmd = ""
     contacts = {}
-
+    print('Welcome to the assistant bot!')
     while(True):
         strng = input("Ведіть команду: ").split(" ")
 
         if len(strng) > 0:
             cmd = strng[0].strip().lower()
-
-            param = [x.strip() for x in strng[1].split(",")]
+            if len(strng) > 1:
+                param = [x.strip() for x in strng[1].split(",")]
             match cmd:
                 case "exit":
                     print("Бувай!")
                     break
-                case "add_contact":
-                    add_contact(param[0], param[1], contacts)
-                case "change_contact":
-                    print("change_contact")
-                case "show_phone":
-                    print(show_phone(param[0], contacts))
+                case "add":
+                    if len(param) < 2:
+                        print("Недостатньо параметрів для додавання контакту.")
+                    else:
+                        add_contact(param[0], param[1], contacts)
+                case "change":
+                    if len(param) < 2:
+                        print("Недостатньо параметрів для зміни контакту.")
+                    else:
+                        change_contact(param[0], param[1], contacts)
+                case "phone":
+                    if len(param) < 1:
+                        print("Недостатньо параметрів для показу номера телефону.")
+                    else:
+                        print(show_phone(param[0], contacts))
+                case 'all':
+                    show_contacts(contacts)
                 case "hello":
-                    print("How can I help you?")
+                    print("Чим я можу вам допомогти?")
                 case "help":
                     print("Список всіх команд:")
-                    print("add_contact <ім'я>, <номер телефону> - додати новий контакт")
-                    print("change_contact <ім'я>, <номер телефону> - змінити існуючий контакт")
-                    print("show_phone <ім'я> - показати номер телефону контакта")
+                    print("hello - привітання")
+                    print("add <ім'я>, <номер телефону> - додати новий контакт")
+                    print("change <ім'я>, <номер телефону> - змінити існуючий контакт")
+                    print("phone <ім'я> - показати номер телефону контакта")
+                    print("all - показати всі контакти")
                     print("exit - закрити чат")
                 case _:
                     print("Вибачте, я не знаю таку команду.")
         else:
             print("Введіть будь ласка команду:")
 
+def show_contacts(contacts:dict[str, str]):
+    if len(contacts) == 0:
+        return "Список контактів порожній."
+    result = "Контакти:\n"
+    for name, phone in contacts.items():
+        result += f"{name}: {phone}\n"
+    print(result.strip())
+
+def check_phone(phone: str) -> bool:
+    match = re.match(r'^\+?\d{7,15}$', phone)
+    if not match:
+        print("Невірний формат номера телефону.")
+    return match is not None
+
+def change_contact(name: str, phone: str, contacts:dict[str, str]):
+    if name in contacts:
+        if check_phone(phone):
+            contacts[name] = phone
+            print("Контакт оновлено.")
+    else:
+        print("Контакт не знайдено.")
+
 def add_contact(name: str, phone: str, contacts:dict[str, str]):
-    if len(name) > 0  and len(phone) > 0:
-        contacts[name] = phone
+    if len(name) > 0:
+        if check_phone(phone):
+            contacts[name] = phone
+            print("Контакт додано.")
+    else:
+        print("Ім'я не може бути порожнім.")
 
 def show_phone(name: str, contacts:dict[str, str]) -> str:
     return contacts.get(name, "Контакт не знайдено.")
 
 def main():
     parse_input()
-
 
 if __name__ == "__main__":
     main()
