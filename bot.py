@@ -11,29 +11,31 @@ def show_contacts(contacts:dict[str, str]):
     result = "Контакти:\n"
     for name, phone in contacts.items():
         result += f"{name}: {phone}\n"
-    print(result.strip())
+    return(result.strip())
 
 def check_phone(phone: str) -> bool:
     match = re.match(r'^\+?\d{7,15}$', phone)
-    if not match:
-        print("Невірний формат номера телефону.")
     return match is not None
 
 def change_contact(name: str, phone: str, contacts:dict[str, str]):
     if name in contacts:
         if check_phone(phone):
             contacts[name] = phone
-            print("Контакт оновлено.")
+            return("Контакт оновлено.")
+        else:
+            return("Невірний формат номера телефону.")
     else:
-        print("Контакт не знайдено.")
+        return("Контакт не знайдено.")
 
 def add_contact(name: str, phone: str, contacts:dict[str, str]):
     if len(name) > 0:
         if check_phone(phone):
             contacts[name] = phone
-            print("Контакт додано.")
+            return("Контакт додано.")
+        else:
+            return("Невірний формат номера телефону.")
     else:
-        print("Ім'я не може бути порожнім.")
+        return("Ім'я не може бути порожнім.")
 
 def show_phone(name: str, contacts:dict[str, str]) -> str:
     return contacts.get(name, "Контакт не знайдено.")
@@ -54,19 +56,19 @@ def main():
                     if len(param) < 2:
                         print("Недостатньо параметрів для додавання контакту.")
                     else:
-                        add_contact(param[0], param[1], contacts)
+                        print(add_contact(param[0], param[1], contacts))
                 case "change":
                     if len(param) < 2:
                         print("Недостатньо параметрів для зміни контакту.")
                     else:
-                        change_contact(param[0], param[1], contacts)
+                        print(change_contact(param[0], param[1], contacts))
                 case "phone":
                     if len(param) < 1:
                         print("Недостатньо параметрів для показу номера телефону.")
                     else:
                         print(show_phone(param[0], contacts))
                 case 'all':
-                    show_contacts(contacts)
+                    print(show_contacts(contacts))
                 case "hello":
                     print("Чим я можу вам допомогти?")
                 case "help":
