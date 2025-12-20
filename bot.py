@@ -1,6 +1,8 @@
 import re
 #яка розбиратиме введений користувачем рядок на команду та її аргументи. Команди та аргументи мають бути розпізнані незалежно від регістру введення.
 def parse_input(user_input: str):
+    if user_input.strip() == "":
+        return "", []
     cmd, *args = user_input.split()
     cmd = cmd.strip().lower()
     return cmd, *args
@@ -47,42 +49,41 @@ def main():
     while True:
         cmd, *param = parse_input(input("Ведіть команду: "))
 
-        if len(cmd) > 0:
-            match cmd:
-                case "exit":
-                    print("Бувай!")
-                    break
-                case "add":
-                    if len(param) < 2:
-                        print("Недостатньо параметрів для додавання контакту.")
-                    else:
-                        print(add_contact(param[0], param[1], contacts))
-                case "change":
-                    if len(param) < 2:
-                        print("Недостатньо параметрів для зміни контакту.")
-                    else:
-                        print(change_contact(param[0], param[1], contacts))
-                case "phone":
-                    if len(param) < 1:
-                        print("Недостатньо параметрів для показу номера телефону.")
-                    else:
-                        print(show_phone(param[0], contacts))
-                case 'all':
-                    print(show_contacts(contacts))
-                case "hello":
-                    print("Чим я можу вам допомогти?")
-                case "help":
-                    print("Список всіх команд:")
-                    print("hello - привітання")
-                    print("add <ім'я> <номер телефону> - додати новий контакт")
-                    print("change <ім'я> <номер телефону> - змінити існуючий контакт")
-                    print("phone <ім'я> - показати номер телефону контакта")
-                    print("all - показати всі контакти")
-                    print("exit - закрити чат")
-                case _:
-                    print("Вибачте, я не знаю таку команду.")
-        else:
-            print("Введіть будь ласка команду:")
+        match cmd:
+            case "exit":
+                print("Бувай!")
+                break
+            case "add":
+                if len(param) < 2:
+                    print("Недостатньо параметрів для додавання контакту.")
+                else:
+                    print(add_contact(param[0], param[1], contacts))
+            case "change":
+                if len(param) < 2:
+                    print("Недостатньо параметрів для зміни контакту.")
+                else:
+                    print(change_contact(param[0], param[1], contacts))
+            case "phone":
+                if len(param) < 1:
+                    print("Недостатньо параметрів для показу номера телефону.")
+                else:
+                    print(show_phone(param[0], contacts))
+            case 'all':
+                print(show_contacts(contacts))
+            case "hello":
+                print("Чим я можу вам допомогти?")
+            case "help":
+                print("Список всіх команд:")
+                print("hello - привітання")
+                print("add <ім'я> <номер телефону> - додати новий контакт")
+                print("change <ім'я> <номер телефону> - змінити існуючий контакт")
+                print("phone <ім'я> - показати номер телефону контакта")
+                print("all - показати всі контакти")
+                print("exit - закрити чат")
+            case "":
+                print("Будь ласка, введіть команду. Для списку команд введіть 'help'.")
+            case _:
+                print("Вибачте, я не знаю таку команду.")
 
 if __name__ == "__main__":
     main()
