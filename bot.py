@@ -1,5 +1,4 @@
 import re
-#яка розбиратиме введений користувачем рядок на команду та її аргументи. Команди та аргументи мають бути розпізнані незалежно від регістру введення.
 def parse_input(user_input: str):
     if user_input.strip() == "":
         return "", []
@@ -19,7 +18,11 @@ def check_phone(phone: str) -> bool:
     match = re.match(r'^\+?\d{7,15}$', phone)
     return match is not None
 
-def change_contact(name: str, phone: str, contacts:dict[str, str]):
+def change_contact(contacts:dict[str, str], *param) -> str:
+    if len(param) < 2:
+        return("Недостатньо параметрів для зміни контакту.")
+    name = param[0]
+    phone = param[1]
     if name in contacts:
         if check_phone(phone):
             contacts[name] = phone
@@ -29,7 +32,11 @@ def change_contact(name: str, phone: str, contacts:dict[str, str]):
     else:
         return("Контакт не знайдено.")
 
-def add_contact(name: str, phone: str, contacts:dict[str, str]):
+def add_contact(contacts:dict[str, str], *param) -> str:
+    if len(param) < 2:
+        return("Недостатньо параметрів для додавання контакту.")
+    name = param[0]
+    phone = param[1]
     if len(name) > 0:
         if check_phone(phone):
             contacts[name] = phone
@@ -39,7 +46,20 @@ def add_contact(name: str, phone: str, contacts:dict[str, str]):
     else:
         return("Ім'я не може бути порожнім.")
 
-def show_phone(name: str, contacts:dict[str, str]) -> str:
+def del_contact(contacts:dict[str, str], *param) -> str:
+    if len(param) < 1:
+        return("Недостатньо параметрів для видалення контакту.")
+    name = param[0]
+    if name in contacts:
+        del contacts[name]
+        return("Контакт видалено.")
+    else:
+        return("Контакт не знайдено.") 
+    
+def show_phone(contacts:dict[str, str], *param) -> str:
+    if len(param) < 1:
+        return("Недостатньо параметрів для показу номера телефону.")
+    name = param[0]
     return contacts.get(name, "Контакт не знайдено.")
 
 def main():
@@ -54,22 +74,15 @@ def main():
                 print("Бувай!")
                 break
             case "add":
-                if len(param) < 2:
-                    print("Недостатньо параметрів для додавання контакту.")
-                else:
-                    print(add_contact(param[0], param[1], contacts))
+                print(add_contact(contacts, *param))
             case "change":
-                if len(param) < 2:
-                    print("Недостатньо параметрів для зміни контакту.")
-                else:
-                    print(change_contact(param[0], param[1], contacts))
+                print(change_contact(contacts, *param))
             case "phone":
-                if len(param) < 1:
-                    print("Недостатньо параметрів для показу номера телефону.")
-                else:
-                    print(show_phone(param[0], contacts))
+                print(show_phone(contacts), *param)
             case 'all':
                 print(show_contacts(contacts))
+            case 'del':
+                print(del_contact(contacts, *param))
             case "hello":
                 print("Чим я можу вам допомогти?")
             case "help":
@@ -79,6 +92,7 @@ def main():
                 print("change <ім'я> <номер телефону> - змінити існуючий контакт")
                 print("phone <ім'я> - показати номер телефону контакта")
                 print("all - показати всі контакти")
+                print("del <ім'я> - видалити контакт")
                 print("exit - закрити чат")
             case "":
                 print("Будь ласка, введіть команду. Для списку команд введіть 'help'.")
