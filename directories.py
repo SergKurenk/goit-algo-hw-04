@@ -1,3 +1,6 @@
+#python -m venv venv
+# venv\Scripts\activate
+# pip install -r requirements.txt
 import sys
 from pathlib import Path
 from colorama import Fore, Style
